@@ -16,7 +16,6 @@
     },
     "rules": {
         "eol-last": ["error", "always"],
-        "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "no-new": 0
     }
