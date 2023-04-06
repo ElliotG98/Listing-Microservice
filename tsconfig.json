@@ -19,5 +19,12 @@
         "strictPropertyInitialization": false,
         "typeRoots": ["./node_modules/@types"]
     },
-    "exclude": ["node_modules", "cdk.out"]
+    "include": ["*.ts", "lib/*.ts", "bin/*.ts", "src/*.ts", "test/*.ts"],
+    "exclude": [
+        "node_modules",
+        "cdk.out",
+        ".husky",
+        ".github",
+        "jest.config.js"
+    ]
 }
