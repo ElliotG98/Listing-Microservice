@@ -3,7 +3,10 @@
         "target": "ES2018",
         "module": "commonjs",
         "lib": ["es2018"],
+        "emitDeclarationOnly": true,
         "declaration": true,
+        "allowJs": false,
+        "outDir": "build",
         "strict": true,
         "noImplicitAny": true,
         "strictNullChecks": true,
@@ -17,7 +20,8 @@
         "inlineSources": true,
         "experimentalDecorators": true,
         "strictPropertyInitialization": false,
-        "typeRoots": ["./node_modules/@types"]
+        "typeRoots": ["./node_modules/@types"],
+        "declarationDir": "definitions"
     },
     "include": ["*.ts", "lib/*.ts", "bin/*.ts", "test/*.ts"],
     "exclude": [
@@ -25,6 +29,7 @@
         "cdk.out",
         ".husky",
         ".github",
-        "jest.config.js"
+        "jest.config.js",
+        "definitions"
     ]
 }
