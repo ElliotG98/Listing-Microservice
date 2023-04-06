@@ -1,0 +1,12 @@
+{
+    "name": "listing-microservice",
+    "version": "1.0.0",
+    "description": "Lambdas to do Listing CRUD operations",
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.114",
+        "@types/node": "*"
+    },
+    "dependencies": {
+        "aws-sdk": "*"
+    }
+}
