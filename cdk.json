@@ -1,5 +1,5 @@
 {
-    "app": "npx ts-node --prefer-ts-exts bin/test.ts",
+    "app": "npx ts-node --prefer-ts-exts bin/listing.ts",
     "watch": {
         "include": ["**"],
         "exclude": [
@@ -11,7 +11,16 @@
             "package*.json",
             "yarn.lock",
             "node_modules",
-            "test"
+            "jest.config.json",
+            ".eslintrc.json",
+            ".gitignore",
+            ".npmignore",
+            ".prettierignore",
+            ".prettierrc.json",
+            "test",
+            ".husky",
+            ".github",
+            ".vscode"
         ]
     },
     "context": {

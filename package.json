@@ -1,8 +1,9 @@
 {
-    "name": "aws-microservices",
-    "version": "0.1.0",
+    "name": "listing-microservice",
+    "version": "1.0.0",
+    "description": "Lambdas to do Listing CRUD operations",
     "bin": {
-        "aws-microservices": "bin/aws-microservices.js"
+        "listing": "bin/listing.ts"
     },
     "scripts": {
         "build": "tsc",
