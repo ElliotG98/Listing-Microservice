@@ -30,6 +30,7 @@
         ".husky",
         ".github",
         "jest.config.js",
-        "definitions"
+        "definitions",
+        "test"
     ]
 }
