@@ -23,14 +23,13 @@
         "typeRoots": ["./node_modules/@types"],
         "declarationDir": "definitions"
     },
-    "include": ["*.ts", "lib/*.ts", "bin/*.ts", "test/*.ts"],
+    "include": ["*.ts", "lib/*.ts", "bin/*.ts", "test/*.ts", "types/*.ts"],
     "exclude": [
         "node_modules",
         "cdk.out",
         ".husky",
         ".github",
         "jest.config.js",
-        "definitions",
-        "test"
+        "definitions"
     ]
 }
