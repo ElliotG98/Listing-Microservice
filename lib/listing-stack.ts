@@ -7,7 +7,7 @@ import {
 } from 'aws-cdk-lib/aws-apigateway';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { App, Stack, RemovalPolicy } from 'aws-cdk-lib';
+import { App, Stack, RemovalPolicy, StackProps } from 'aws-cdk-lib';
 import {
     NodejsFunction,
     type NodejsFunctionProps,
@@ -15,8 +15,8 @@ import {
 import { join } from 'path';
 
 export class ListingStack extends Stack {
-    constructor(app: App, id: string) {
-        super(app, id);
+    constructor(app: App, id: string, props?: StackProps) {
+        super(app, id, props);
 
         const dynamoTable = new Table(this, 'listing', {
             partitionKey: {
@@ -41,6 +41,7 @@ export class ListingStack extends Stack {
             environment: {
                 PRIMARY_KEY: 'listingId',
                 TABLE_NAME: dynamoTable.tableName,
+                region: process.env.region || '',
             },
             runtime: Runtime.NODEJS_18_X,
         };
@@ -138,7 +139,3 @@ export function addCorsOptions(apiResource: IResource) {
         }
     );
 }
-
-const app = new App();
-new ListingStack(app, 'ListingMicroservice');
-app.synth();
