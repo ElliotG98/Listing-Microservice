@@ -1,4 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import * as AWS from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
+
+const db = new AWS.DynamoDB.DocumentClient();
 
 export const handler = async (
     event: APIGatewayProxyEvent
@@ -17,5 +21,16 @@ export const handler = async (
 
     console.log('LISTING: \n' + JSON.stringify(listing, null, 2));
 
-    return { statusCode: 200, body: JSON.stringify('Hello, world!') };
+    listing[process.env.PRIMARY_KEY || ''] = uuidv4();
+    const params = {
+        TableName: process.env.TABLE_NAME || '',
+        Item: listing,
+    };
+
+    try {
+        await db.put(params).promise();
+        return { statusCode: 201, body: 'Success' };
+    } catch (e) {
+        return { statusCode: 500, body: JSON.stringify(e) };
+    }
 };

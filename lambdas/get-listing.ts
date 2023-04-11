@@ -34,7 +34,7 @@ export const handler = async (
                 body: `There is no listing with ID: ${listingId}`,
             };
         }
-    } catch (dbError) {
-        return { statusCode: 500, body: JSON.stringify(dbError) };
+    } catch (e) {
+        return { statusCode: 500, body: JSON.stringify(e) };
     }
 };

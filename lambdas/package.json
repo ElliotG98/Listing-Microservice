@@ -4,9 +4,11 @@
     "description": "Lambdas to do Listing CRUD operations",
     "devDependencies": {
         "@types/aws-lambda": "^8.10.114",
-        "@types/node": "*"
+        "@types/node": "*",
+        "@types/uuid": "^9.0.1"
     },
     "dependencies": {
-        "aws-sdk": "*"
+        "aws-sdk": "*",
+        "uuid": "^9.0.0"
     }
 }
