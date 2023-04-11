@@ -3,15 +3,56 @@ import * as AWS from 'aws-sdk';
 import { handler as getListingFunction } from '../lambdas/get-listing';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
-const getListingEvent: Partial<APIGatewayProxyEvent> = {
+const getListingEvent: APIGatewayProxyEvent = {
     httpMethod: 'GET',
     path: '/get-listing',
     headers: {
         'Content-Type': 'application/json',
     },
+    body: null,
     isBase64Encoded: false,
     pathParameters: null,
     stageVariables: null,
+    multiValueHeaders: {
+        accept: [
+            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        ],
+        'accept-encoding': ['gzip, deflate, br'],
+    },
+    resource: '/',
+    queryStringParameters: null,
+    multiValueQueryStringParameters: null,
+    requestContext: {
+        accountId: '123456789012',
+        authorizer: null,
+        resourcePath: '/',
+        apiId: '70ixmpl4fl',
+        protocol: 'HTTP/1.1',
+        httpMethod: 'GET',
+        path: '/Prod/',
+        resourceId: '2gxmpl',
+        stage: 'Prod',
+        requestTimeEpoch: 1583798639428,
+        requestId: '77375676-xmpl-4b79-853a-f982474efe18',
+        identity: {
+            cognitoIdentityPoolId: null,
+            accountId: null,
+            cognitoIdentityId: null,
+            caller: null,
+            sourceIp: '52.255.255.12',
+            principalOrgId: null,
+            accessKey: null,
+            cognitoAuthenticationType: null,
+            cognitoAuthenticationProvider: null,
+            userArn: null,
+            userAgent:
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36',
+            user: null,
+            apiKey: '123',
+            apiKeyId: '123',
+            clientCert: null,
+        },
+    },
 };
 
 test('GET listing', () => {
