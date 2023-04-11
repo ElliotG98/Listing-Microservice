@@ -1,4 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import * as AWS from 'aws-sdk';
+
+const db = new AWS.DynamoDB.DocumentClient();
 
 export const handler = async (
     event: APIGatewayProxyEvent
@@ -14,5 +17,17 @@ export const handler = async (
         };
     }
 
-    return { statusCode: 200, body: JSON.stringify('Hello, world!') };
+    const params = {
+        TableName: process.env.TABLE_NAME || '',
+        Key: {
+            [process.env.PRIMARY_KEY || '']: listingId,
+        },
+    };
+
+    try {
+        await db.delete(params).promise();
+        return { statusCode: 200, body: 'Success' };
+    } catch (e) {
+        return { statusCode: 500, body: JSON.stringify(e) };
+    }
 };
