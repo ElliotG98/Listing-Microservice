@@ -21,7 +21,7 @@ export class ListingStack extends Stack {
         const dynamoTable = new Table(this, 'listing', {
             partitionKey: {
                 name: 'listingId',
-                type: AttributeType.NUMBER,
+                type: AttributeType.STRING,
             },
             sortKey: {
                 name: 'title',
