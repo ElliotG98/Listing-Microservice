@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
-
-const db = new AWS.DynamoDB.DocumentClient();
+import { GetCommand } from '@aws-sdk/lib-dynamodb';
+import { ddbDocClient } from './libs/ddbDocClient';
 
 export const handler = async (
     event: APIGatewayProxyEvent
@@ -25,7 +24,7 @@ export const handler = async (
     };
 
     try {
-        const response = await db.get(params).promise();
+        const response = await ddbDocClient.send(new GetCommand(params));
         if (response.Item) {
             return { statusCode: 200, body: JSON.stringify(response.Item) };
         } else {
