@@ -1,4 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import * as AWS from 'aws-sdk';
+
+const db = new AWS.DynamoDB.DocumentClient();
 
 export const handler = async (
     event: APIGatewayProxyEvent
@@ -14,5 +17,24 @@ export const handler = async (
         };
     }
 
-    return { statusCode: 200, body: JSON.stringify('Hello, world!') };
+    const params = {
+        TableName: process.env.TABLE_NAME || '',
+        Key: {
+            [process.env.PRIMARY_KEY || '']: listingId,
+        },
+    };
+
+    try {
+        const response = await db.get(params).promise();
+        if (response.Item) {
+            return { statusCode: 200, body: JSON.stringify(response.Item) };
+        } else {
+            return {
+                statusCode: 404,
+                body: `There is no listing with ID: ${listingId}`,
+            };
+        }
+    } catch (dbError) {
+        return { statusCode: 500, body: JSON.stringify(dbError) };
+    }
 };
