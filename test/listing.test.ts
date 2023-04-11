@@ -1,52 +1,78 @@
-// import * as AWSMock from 'aws-sdk-mock';
-// import * as AWS from 'aws-sdk';
-// import { handler as getListingFunction } from '../lambdas/get-listing';
+import * as AWSMock from 'aws-sdk-mock';
+import * as AWS from 'aws-sdk';
+import { handler as getListingFunction } from '../lambdas/get-listing';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 
-// test('GET listing', () => {
-//     beforeAll(() => {
-//         AWSMock.setSDKInstance(AWS);
-//     });
+const getListingEvent: Partial<APIGatewayProxyEvent> = {
+    httpMethod: 'GET',
+    path: '/get-listing',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    isBase64Encoded: false,
+    pathParameters: null,
+    stageVariables: null,
+};
 
-//     afterEach(() => {
-//         AWSMock.restore();
-//     });
+test('GET listing', () => {
+    beforeAll(() => {
+        AWSMock.setSDKInstance(AWS);
+    });
 
-//     test('returns the requested item', async () => {
-//         const event = { id: '123' };
-//         const expectedItem = { id: '123', title: 'Test listing' };
+    afterEach(() => {
+        AWSMock.restore();
+    });
 
-//         AWSMock.mock('DynamoDB.DocumentClient', 'get', (params: unknown, callback: any) => {
-//             callback(null, { Item: expectedItem });
-//         });
+    test('returns the requested item', async () => {
+        const event = {
+            ...getListingEvent,
+            queryStringParameters: {
+                id: '123',
+            },
+        };
+        const expectedItem = { id: '123', title: 'Test listing' };
 
-//         const result = await getListingFunction(event);
+        AWSMock.mock(
+            'DynamoDB.DocumentClient',
+            'get',
+            (params: unknown, callback: any) => {
+                callback(null, { Item: expectedItem });
+            }
+        );
 
-//         expect(result).toEqual(expectedItem);
-//     });
+        const result = await getListingFunction(event);
 
-//     test('returns an error when the event payload is missing required fields', async () => {
-//         const event = { invalidKey: '123' };
+        expect(result).toEqual(expectedItem);
+    });
 
-//         const result = await getListingFunction.handler(event);
+    test('returns an error when the event payload is missing required fields', async () => {
+        const event = {
+            ...getListingEvent,
+        };
 
-//         expect(result.statusCode).toBe(400);
-//         expect(result.body).toBe('Invalid request payload');
-//     });
+        const result = await getListingFunction(event);
 
-//     test('returns an error when the requested item is not found', async () => {
-//         const event = { id: '123' };
+        expect(result.statusCode).toBe(400);
+    });
 
-//         AWSMock.mock('DynamoDB.DocumentClient', 'get', (params, callback) => {
-//             expect(params).toEqual({
-//                 TableName: 'my-table',
-//                 Key: { id: '123' }
-//             });
-//             callback(null, {});
-//         });
+    test('returns an error when the requested item is not found', async () => {
+        const event = {
+            ...getListingEvent,
+            queryStringParameters: {
+                id: '123',
+            },
+        };
 
-//         const result = await getListingFunction.handler(event);
+        AWSMock.mock(
+            'DynamoDB.DocumentClient',
+            'get',
+            (params: unknown, callback: any) => {
+                callback(null, {});
+            }
+        );
 
-//         expect(result.statusCode).toBe(404);
-//         expect(result.body).toBe('Item not found');
-//     });
-// });
+        const result = await getListingFunction(event);
+
+        expect(result.statusCode).toBe(404);
+    });
+});

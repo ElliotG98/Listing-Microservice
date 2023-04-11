@@ -13,11 +13,15 @@
         "prepare": "husky install"
     },
     "devDependencies": {
+        "@types/aws-lambda": "^8.10.114",
         "@types/jest": "^29.5.0",
         "@types/node": "^18.15.11",
         "@typescript-eslint/eslint-plugin": "^5.43.0",
         "@typescript-eslint/parser": "^5.57.1",
         "aws-cdk": "^2.72.1",
+        "aws-lambda": "^1.0.7",
+        "aws-sdk": "^2.1354.0",
+        "aws-sdk-mock": "^5.8.0",
         "eslint": "^8.0.1",
         "eslint-config-prettier": "^8.8.0",
         "eslint-config-standard-with-typescript": "^34.0.1",
