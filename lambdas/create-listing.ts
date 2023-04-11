@@ -1,8 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
-
-const db = new AWS.DynamoDB.DocumentClient();
+import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { ddbDocClient } from './libs/ddbDocClient';
 
 export const handler = async (
     event: APIGatewayProxyEvent
@@ -28,7 +27,7 @@ export const handler = async (
     };
 
     try {
-        await db.put(params).promise();
+        await ddbDocClient.send(new PutCommand(params));
         return { statusCode: 201, body: 'Success' };
     } catch (e) {
         return { statusCode: 500, body: JSON.stringify(e) };
