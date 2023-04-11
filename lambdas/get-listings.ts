@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import * as AWS from 'aws-sdk';
-
-const db = new AWS.DynamoDB.DocumentClient();
+import { QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { ddbDocClient } from './libs/ddbDocClient';
 
 export const handler = async (
     event: APIGatewayProxyEvent
@@ -13,7 +12,7 @@ export const handler = async (
     };
 
     try {
-        const response = await db.scan(params).promise();
+        const response = await ddbDocClient.send(new QueryCommand(params));
         return { statusCode: 200, body: JSON.stringify(response.Items) };
     } catch (e) {
         return { statusCode: 500, body: JSON.stringify(e) };
