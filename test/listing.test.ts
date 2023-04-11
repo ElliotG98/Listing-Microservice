@@ -1,7 +1,9 @@
-import * as AWSMock from 'aws-sdk-mock';
-import * as AWS from 'aws-sdk';
+import { mockClient } from 'aws-sdk-client-mock';
 import { handler as getListingFunction } from '../lambdas/get-listing';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import { GetCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+
+const ddbMock = mockClient(DynamoDBDocumentClient);
 
 const getListingEvent: APIGatewayProxyEvent = {
     httpMethod: 'GET',
@@ -55,31 +57,28 @@ const getListingEvent: APIGatewayProxyEvent = {
     },
 };
 
-test('GET listing', () => {
+describe('GET listing', () => {
     beforeAll(() => {
-        AWSMock.setSDKInstance(AWS);
+        process.env = {
+            PRIMARY_KEY: 'listingId',
+            TABLE_NAME: 'table',
+        };
     });
 
     afterEach(() => {
-        AWSMock.restore();
+        ddbMock.reset();
     });
 
     test('returns the requested item', async () => {
         const event = {
             ...getListingEvent,
-            queryStringParameters: {
+            pathParameters: {
                 id: '123',
             },
         };
         const expectedItem = { id: '123', title: 'Test listing' };
 
-        AWSMock.mock(
-            'DynamoDB.DocumentClient',
-            'get',
-            (params: unknown, callback: any) => {
-                callback(null, { Item: expectedItem });
-            }
-        );
+        ddbMock.on(GetCommand).resolves({ Item: expectedItem });
 
         const result = await getListingFunction(event);
 
@@ -99,18 +98,12 @@ test('GET listing', () => {
     test('returns an error when the requested item is not found', async () => {
         const event = {
             ...getListingEvent,
-            queryStringParameters: {
+            pathParameters: {
                 id: '123',
             },
         };
 
-        AWSMock.mock(
-            'DynamoDB.DocumentClient',
-            'get',
-            (params: unknown, callback: any) => {
-                callback(null, {});
-            }
-        );
+        ddbMock.on(GetCommand).resolves({ Item: {} });
 
         const result = await getListingFunction(event);
 
