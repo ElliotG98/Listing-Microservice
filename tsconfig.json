@@ -21,9 +21,11 @@
         "experimentalDecorators": true,
         "strictPropertyInitialization": false,
         "typeRoots": ["./node_modules/@types"],
-        "declarationDir": "definitions"
+        "declarationDir": "definitions",
+        "esModuleInterop": true,
+        "resolveJsonModule": true
     },
-    "include": ["*.ts", "lib/*.ts", "bin/*.ts", "test/*.ts", "types/*.ts"],
+    "include": ["*.ts", "lib/**/*.ts", "bin/*.ts", "test/*.ts", "types/*.ts"],
     "exclude": [
         "node_modules",
         "cdk.out",
