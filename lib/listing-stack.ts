@@ -37,7 +37,11 @@ export class ListingStack extends Stack {
                     'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
                 ],
             },
-            depsLockFilePath: join(__dirname, 'lambdas', 'package-lock.json'),
+            depsLockFilePath: join(
+                __dirname,
+                '../lambdas',
+                'package-lock.json'
+            ),
             environment: {
                 PRIMARY_KEY: 'listingId',
                 TABLE_NAME: dynamoTable.tableName,
@@ -47,23 +51,23 @@ export class ListingStack extends Stack {
         };
 
         const getListing = new NodejsFunction(this, 'getListingLambda', {
-            entry: join(__dirname, 'lambdas', 'get-listing.ts'),
+            entry: join(__dirname, '../lambdas', 'get-listing.ts'),
             ...nodeJsFunctionProps,
         });
         const getListings = new NodejsFunction(this, 'getListingsLambda', {
-            entry: join(__dirname, 'lambdas', 'get-listings.ts'),
+            entry: join(__dirname, '../lambdas', 'get-listings.ts'),
             ...nodeJsFunctionProps,
         });
         const createListing = new NodejsFunction(this, 'createListingLambda', {
-            entry: join(__dirname, 'lambdas', 'create-listing.ts'),
+            entry: join(__dirname, '../lambdas', 'create-listing.ts'),
             ...nodeJsFunctionProps,
         });
         const updateListing = new NodejsFunction(this, 'updateListingLambda', {
-            entry: join(__dirname, 'lambdas', 'update-listing.ts'),
+            entry: join(__dirname, '../lambdas', 'update-listing.ts'),
             ...nodeJsFunctionProps,
         });
         const deleteListing = new NodejsFunction(this, 'deleteListingLambda', {
-            entry: join(__dirname, 'lambdas', 'delete-listing.ts'),
+            entry: join(__dirname, '../lambdas', 'delete-listing.ts'),
             ...nodeJsFunctionProps,
         });
 
