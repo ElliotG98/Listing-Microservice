@@ -4,6 +4,8 @@ import {
     MockIntegration,
     PassthroughBehavior,
     RestApi,
+    CfnAuthorizer,
+    AuthorizationType,
 } from 'aws-cdk-lib/aws-apigateway';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
@@ -13,6 +15,7 @@ import {
     type NodejsFunctionProps,
 } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { join } from 'path';
+import { UserPool } from 'aws-cdk-lib/aws-cognito';
 
 export class ListingStack extends Stack {
     constructor(app: App, id: string, props?: StackProps) {
@@ -29,6 +32,20 @@ export class ListingStack extends Stack {
             },
             tableName: 'listing',
             removalPolicy: RemovalPolicy.DESTROY,
+        });
+
+        const userPool = new UserPool(this, 'UserPool', {
+            userPoolName: 'InSearchOfUserPool',
+            signInAliases: {
+                email: true,
+            },
+            passwordPolicy: {
+                minLength: 8,
+                requireDigits: true,
+                requireLowercase: true,
+                requireUppercase: true,
+                requireSymbols: true,
+            },
         });
 
         const nodeJsFunctionProps: NodejsFunctionProps = {
@@ -87,15 +104,48 @@ export class ListingStack extends Stack {
             restApiName: 'Listings Service',
         });
 
+        const authorizer = new CfnAuthorizer(this, 'cfnAuth', {
+            restApiId: api.restApiId,
+            name: 'ListingAPIAuthorizer',
+            type: 'COGNITO_USER_POOLS',
+            identitySource: 'method.request.header.Authorization',
+            providerArns: [userPool.userPoolArn],
+        });
+
         const listings = api.root.addResource('listings');
-        listings.addMethod('GET', getListingsIntegration);
-        listings.addMethod('POST', createListingIntegration);
+        listings.addMethod('GET', getListingsIntegration, {
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: {
+                authorizerId: authorizer.ref,
+            },
+        });
+        listings.addMethod('POST', createListingIntegration, {
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: {
+                authorizerId: authorizer.ref,
+            },
+        });
         addCorsOptions(listings);
 
         const listing = listings.addResource('{id}');
-        listing.addMethod('GET', getListingIntegration);
-        listing.addMethod('PATCH', updateListingIntegration);
-        listing.addMethod('DELETE', deleteListingIntegration);
+        listing.addMethod('GET', getListingIntegration, {
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: {
+                authorizerId: authorizer.ref,
+            },
+        });
+        listing.addMethod('PATCH', updateListingIntegration, {
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: {
+                authorizerId: authorizer.ref,
+            },
+        });
+        listing.addMethod('DELETE', deleteListingIntegration, {
+            authorizationType: AuthorizationType.COGNITO,
+            authorizer: {
+                authorizerId: authorizer.ref,
+            },
+        });
         addCorsOptions(listing);
     }
 }
