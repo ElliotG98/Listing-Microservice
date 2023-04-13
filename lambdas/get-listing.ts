@@ -25,7 +25,7 @@ export const handler = async (
 
     try {
         const response = await ddbDocClient.send(new GetCommand(params));
-        if (response.Item) {
+        if (response?.Item) {
             return { statusCode: 200, body: JSON.stringify(response.Item) };
         } else {
             return {
@@ -34,6 +34,7 @@ export const handler = async (
             };
         }
     } catch (e) {
+        console.log(e);
         return { statusCode: 500, body: JSON.stringify(e) };
     }
 };
