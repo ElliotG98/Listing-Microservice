@@ -23,7 +23,6 @@
         "aws-cdk": "^2.72.1",
         "aws-lambda": "^1.0.7",
         "aws-sdk": "^2.1354.0",
-        "aws-sdk-client-mock": "^2.1.1",
         "eslint": "^8.0.1",
         "eslint-config-prettier": "^8.8.0",
         "eslint-config-standard-with-typescript": "^34.0.1",

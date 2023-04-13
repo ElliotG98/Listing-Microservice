@@ -1,12 +1,22 @@
-import { mockClient } from 'aws-sdk-client-mock';
-import { handler as getListingFunction } from '../lambdas/get-listing';
+import { handler as getListingsFunction } from '../lambdas/get-listings';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { QueryCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { eventJSON } from './lib';
 
-const ddbMock = mockClient(DynamoDBDocumentClient);
-
 const getListingEvent: APIGatewayProxyEvent = eventJSON;
+const expectedItems = [
+    { id: '1', title: 'Test listings' },
+    { id: '2', title: 'Test listings' },
+];
+jest.mock('../lambdas/libs/ddbDocClient', () => {
+    return {
+        ddbDocClient: {
+            send: jest.fn().mockImplementation((command) => {
+                console.log(command);
+                return Promise.resolve({ Items: expectedItems });
+            }),
+        },
+    };
+});
 
 describe('GET listings', () => {
     beforeAll(() => {
@@ -17,22 +27,16 @@ describe('GET listings', () => {
     });
 
     afterEach(() => {
-        ddbMock.reset();
+        jest.resetAllMocks();
     });
 
     test('returns the requested items', async () => {
         const event = {
             ...getListingEvent,
         };
-        const expectedItems = [
-            { id: '1', title: 'Test listings' },
-            { id: '2', title: 'Test listings' },
-        ];
 
-        ddbMock.on(QueryCommand).resolves({ Items: expectedItems });
+        const result = await getListingsFunction(event);
 
-        const result = await getListingFunction(event);
-
-        expect(result).toEqual(expectedItems);
+        expect(JSON.parse(result.body)).toEqual(expectedItems);
     });
 });

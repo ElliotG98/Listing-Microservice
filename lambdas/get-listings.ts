@@ -13,7 +13,14 @@ export const handler = async (
 
     try {
         const response = await ddbDocClient.send(new QueryCommand(params));
-        return { statusCode: 200, body: JSON.stringify(response.Items) };
+        if (response?.Items) {
+            return { statusCode: 200, body: JSON.stringify(response.Items) };
+        } else {
+            return {
+                statusCode: 404,
+                body: `There are no listings`,
+            };
+        }
     } catch (e) {
         return { statusCode: 500, body: JSON.stringify(e) };
     }
