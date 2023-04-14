@@ -6,7 +6,7 @@ The Listing Microservice is a Node.js application built using the AWS Cloud Deve
 
 To install the Listing Microservice, follow these steps:
 
--   Clone the repository: git clone https://github.com/example/listing-microservice.git
+-   Clone the repository: git clone git@github.com:ElliotG98/InSearchOf-Listing-Microservice.git
 -   Install dependencies: npm install
 -   Configure AWS credentials: aws configure
 -   Deploy the microservice: cdk deploy
