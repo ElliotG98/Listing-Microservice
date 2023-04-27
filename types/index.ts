@@ -1,3 +1,7 @@
+export interface CustomEnv {
+    userPoolId: string;
+}
+
 export interface Profile {
     firstName: string;
     lastName: string;

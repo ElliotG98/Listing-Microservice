@@ -16,10 +16,13 @@ import {
 } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { join } from 'path';
 import { UserPool } from 'aws-cdk-lib/aws-cognito';
+import { CustomEnv } from '../types';
 
 export class ListingStack extends Stack {
-    constructor(app: App, id: string, props?: StackProps) {
+    constructor(app: App, id: string, props?: StackProps, env?: CustomEnv) {
         super(app, id, props);
+
+        const { userPoolId } = env || {};
 
         const dynamoTable = new Table(this, 'listing', {
             partitionKey: {
@@ -34,19 +37,11 @@ export class ListingStack extends Stack {
             removalPolicy: RemovalPolicy.DESTROY,
         });
 
-        const userPool = new UserPool(this, 'UserPool', {
-            userPoolName: 'InSearchOfUserPool',
-            signInAliases: {
-                email: true,
-            },
-            passwordPolicy: {
-                minLength: 8,
-                requireDigits: true,
-                requireLowercase: true,
-                requireUppercase: true,
-                requireSymbols: true,
-            },
-        });
+        const userPool = UserPool.fromUserPoolId(
+            this,
+            'userPool',
+            userPoolId as string
+        );
 
         const nodeJsFunctionProps: NodejsFunctionProps = {
             bundling: {
